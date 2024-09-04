@@ -1,32 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_app/src/home/widgets/home_header.dart';
+import 'package:recipe_app/src/home/widgets/home_searchbar.dart';
+
+import '../ingredient/ingredient.dart';
+import '../recipe/recipe.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+  HomeView({super.key});
 
   static const routeName = '/home';
+  final List<Recipe> recipes = [
+    Recipe(
+      name: 'Pancake',
+      ingredients: [
+        Ingredient(name: 'Sugar', quantity: 100, unit: Unit.gram),
+        Ingredient(name: 'Flour', quantity: 200, unit: Unit.gram),
+        Ingredient(name: 'Milk', quantity: 250, unit: Unit.milliliter),
+      ],
+      instructions: [
+        'Mix the dry ingredients.',
+        'Add milk and stir well.',
+        'Cook on a hot griddle.',
+      ],
+    ),
+    Recipe(
+      name: 'Omelette',
+      ingredients: [
+        Ingredient(name: 'Egg', quantity: 3, unit: Unit.piece),
+        Ingredient(name: 'Salt', quantity: 1, unit: Unit.pinch),
+        Ingredient(name: 'Butter', quantity: 1, unit: Unit.tablespoon),
+      ],
+      instructions: [
+        'Beat the eggs.',
+        'Melt butter in a pan.',
+        'Pour the eggs and cook.',
+      ],
+    ),
+    Recipe(
+      name: 'Chocolate Cake',
+      ingredients: [
+        Ingredient(name: 'Flour', quantity: 200, unit: Unit.gram),
+        Ingredient(name: 'Sugar', quantity: 150, unit: Unit.gram),
+        Ingredient(name: 'Cocoa powder', quantity: 50, unit: Unit.gram),
+      ],
+      instructions: [
+        'Mix the dry ingredients.',
+        'Add wet ingredients and stir.',
+        'Bake in the oven at 180°C for 30 minutes.',
+      ],
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).textTheme;
-
     return Scaffold(
-      body: Container(
-        margin: const EdgeInsets.only(top: 50.0, left: 20.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  "Looking for your favorite meal",
-                  style: theme.headlineMedium,
+      body: SafeArea(
+        child: Container(
+          margin: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Column(
+            children: [
+              const HomeHeader(),
+              Expanded(
+                child: HomeSearchBar(
+                  recipes: recipes,
                 ),
-                const Spacer(),
-                Image.asset(
-                  "images/foods/profile-picture.webp",
-                )
-              ],
-            )
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );

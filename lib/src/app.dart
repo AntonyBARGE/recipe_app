@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import 'home/home_view.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
             GoRoute(
               path: HomeView.routeName,
               name: HomeView.routeName,
-              builder: (context, state) => const HomeView(),
+              builder: (context, state) => HomeView(),
             ),
             GoRoute(
               path: SettingsView.routeName,
@@ -135,50 +136,54 @@ class MyApp extends StatelessWidget {
     //
     // The ListenableBuilder Widget listens to the SettingsController for changes.
     // Whenever the user updates their settings, the MaterialApp is rebuilt.
-    return ListenableBuilder(
-      listenable: settingsController,
-      builder: (BuildContext context, Widget? child) {
-        return MaterialApp.router(
-          // Providing a restorationScopeId allows the Navigator built by the
-          // MaterialApp to restore the navigation stack when a user leaves and
-          // returns to the app after it has been killed while running in the
-          // background.
-          restorationScopeId: 'app',
+    return ScreenUtilInit(
+      designSize: const Size(360, 690),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      child: ListenableBuilder(
+        listenable: settingsController,
+        builder: (BuildContext context, Widget? child) {
+          return MaterialApp.router(
+            // Providing a restorationScopeId allows the Navigator built by the
+            // MaterialApp to restore the navigation stack when a user leaves and
+            // returns to the app after it has been killed while running in the
+            // background.
+            restorationScopeId: 'app',
+            // Provide the generated AppLocalizations to the MaterialApp. This
+            // allows descendant Widgets to display the correct translations
+            // depending on the user's locale.
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en', ''), // English, no country code
+            ],
 
-          // Provide the generated AppLocalizations to the MaterialApp. This
-          // allows descendant Widgets to display the correct translations
-          // depending on the user's locale.
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en', ''), // English, no country code
-          ],
+            // Use AppLocalizations to configure the correct application title
+            // depending on the user's locale.
+            //
+            // The appTitle is defined in .arb files found in the localization
+            // directory.
+            onGenerateTitle: (BuildContext context) =>
+                AppLocalizations.of(context)!.appTitle,
 
-          // Use AppLocalizations to configure the correct application title
-          // depending on the user's locale.
-          //
-          // The appTitle is defined in .arb files found in the localization
-          // directory.
-          onGenerateTitle: (BuildContext context) =>
-              AppLocalizations.of(context)!.appTitle,
+            // Define a light and dark color theme. Then, read the user's
+            // preferred ThemeMode (light, dark, or system default) from the
+            // SettingsController to display the correct theme.
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            themeMode: settingsController.themeMode,
 
-          // Define a light and dark color theme. Then, read the user's
-          // preferred ThemeMode (light, dark, or system default) from the
-          // SettingsController to display the correct theme.
-          theme: lightTheme,
-          darkTheme: darkTheme,
-          themeMode: settingsController.themeMode,
-
-          // Define a function to handle named routes in order to support
-          // Flutter web url navigation and deep linking.
-          routerConfig: router,
-          builder: (context, child) => child!,
-        );
-      },
+            // Define a function to handle named routes in order to support
+            // Flutter web url navigation and deep linking.
+            routerConfig: router,
+            builder: (context, child) => child!,
+          );
+        },
+      ),
     );
   }
 }
@@ -189,45 +194,45 @@ final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
   ),
   useMaterial3: true, // Enabling Material 3 UI components
-  textTheme: const TextTheme(
+  textTheme: TextTheme(
     displayLarge: TextStyle(
-        fontSize: 57, fontWeight: FontWeight.bold, color: Colors.black),
+        fontSize: 57.sp, fontWeight: FontWeight.bold, color: Colors.black),
     displayMedium: TextStyle(
-        fontSize: 45, fontWeight: FontWeight.bold, color: Colors.black),
+        fontSize: 45.sp, fontWeight: FontWeight.bold, color: Colors.black),
     displaySmall: TextStyle(
-        fontSize: 36, fontWeight: FontWeight.bold, color: Colors.black),
+        fontSize: 36.sp, fontWeight: FontWeight.bold, color: Colors.black),
     headlineLarge: TextStyle(
-        fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black),
+        fontSize: 32.sp, fontWeight: FontWeight.bold, color: Colors.black),
     headlineMedium: TextStyle(
-        fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
+        fontSize: 28.sp, fontWeight: FontWeight.bold, color: Colors.black),
     headlineSmall: TextStyle(
-        fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+        fontSize: 24.sp, fontWeight: FontWeight.bold, color: Colors.black),
     titleLarge: TextStyle(
-        fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
+        fontSize: 22.sp, fontWeight: FontWeight.bold, color: Colors.black),
     titleMedium: TextStyle(
-        fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+        fontSize: 16.sp, fontWeight: FontWeight.bold, color: Colors.black),
     titleSmall: TextStyle(
-        fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
+        fontSize: 14.sp, fontWeight: FontWeight.bold, color: Colors.black),
     bodyLarge: TextStyle(
-        fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black),
+        fontSize: 16.sp, fontWeight: FontWeight.normal, color: Colors.black),
     bodyMedium: TextStyle(
-        fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black),
+        fontSize: 14.sp, fontWeight: FontWeight.normal, color: Colors.black),
     bodySmall: TextStyle(
-        fontSize: 12, fontWeight: FontWeight.normal, color: Colors.black),
+        fontSize: 12.sp, fontWeight: FontWeight.normal, color: Colors.black),
     labelLarge: TextStyle(
-        fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+        fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.black),
     labelMedium: TextStyle(
-        fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black),
+        fontSize: 12.sp, fontWeight: FontWeight.w500, color: Colors.black),
     labelSmall: TextStyle(
-        fontSize: 11, fontWeight: FontWeight.w500, color: Colors.black),
+        fontSize: 11.sp, fontWeight: FontWeight.w500, color: Colors.black),
   ),
-  appBarTheme: const AppBarTheme(
-    backgroundColor: Color(0xFFB14BA8),
+  appBarTheme: AppBarTheme(
+    backgroundColor: const Color(0xFFB14BA8),
     foregroundColor: Colors.white,
     elevation: 0,
-    iconTheme: IconThemeData(color: Colors.white),
+    iconTheme: const IconThemeData(color: Colors.white),
     titleTextStyle: TextStyle(
-        fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 20.sp, fontWeight: FontWeight.bold, color: Colors.white),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
@@ -242,7 +247,7 @@ final ThemeData lightTheme = ThemeData(
       textStyle: const TextStyle(fontWeight: FontWeight.bold), // Text style
       padding: const EdgeInsets.symmetric(
           horizontal: 16.0, vertical: 12.0), // Button padding
-      minimumSize: const Size(64, 36), // Minimum size for the button
+      minimumSize: Size(64.w, 36.h), // Minimum size for the button
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0), // Rounded corners
       ),
@@ -287,45 +292,45 @@ final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
   ),
   useMaterial3: true, // Enabling Material 3 UI components
-  textTheme: const TextTheme(
+  textTheme: TextTheme(
     displayLarge: TextStyle(
-        fontSize: 57, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 57.sp, fontWeight: FontWeight.bold, color: Colors.white),
     displayMedium: TextStyle(
-        fontSize: 45, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 45.sp, fontWeight: FontWeight.bold, color: Colors.white),
     displaySmall: TextStyle(
-        fontSize: 36, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 36.sp, fontWeight: FontWeight.bold, color: Colors.white),
     headlineLarge: TextStyle(
-        fontSize: 32, fontWeight: FontWeight.w600, color: Colors.white),
+        fontSize: 32.sp, fontWeight: FontWeight.w600, color: Colors.white),
     headlineMedium: TextStyle(
-        fontSize: 28, fontWeight: FontWeight.w600, color: Colors.white),
+        fontSize: 28.sp, fontWeight: FontWeight.w600, color: Colors.white),
     headlineSmall: TextStyle(
-        fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white),
+        fontSize: 24.sp, fontWeight: FontWeight.w600, color: Colors.white),
     titleLarge: TextStyle(
-        fontSize: 22, fontWeight: FontWeight.w500, color: Colors.white),
+        fontSize: 22.sp, fontWeight: FontWeight.w500, color: Colors.white),
     titleMedium: TextStyle(
-        fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
+        fontSize: 16.sp, fontWeight: FontWeight.w500, color: Colors.white),
     titleSmall: TextStyle(
-        fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
+        fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.white),
     bodyLarge: TextStyle(
-        fontSize: 16, fontWeight: FontWeight.normal, color: Colors.white),
+        fontSize: 16.sp, fontWeight: FontWeight.normal, color: Colors.white),
     bodyMedium: TextStyle(
-        fontSize: 14, fontWeight: FontWeight.normal, color: Colors.white),
+        fontSize: 14.sp, fontWeight: FontWeight.normal, color: Colors.white),
     bodySmall: TextStyle(
-        fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white),
+        fontSize: 12.sp, fontWeight: FontWeight.normal, color: Colors.white),
     labelLarge: TextStyle(
-        fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
+        fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.white),
     labelMedium: TextStyle(
-        fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
+        fontSize: 12.sp, fontWeight: FontWeight.w500, color: Colors.white),
     labelSmall: TextStyle(
-        fontSize: 11, fontWeight: FontWeight.w500, color: Colors.white),
+        fontSize: 11.sp, fontWeight: FontWeight.w500, color: Colors.white),
   ),
-  appBarTheme: const AppBarTheme(
-    backgroundColor: Color(0xFFB14BA8),
+  appBarTheme: AppBarTheme(
+    backgroundColor: const Color(0xFFB14BA8),
     foregroundColor: Colors.white,
     elevation: 0,
-    iconTheme: IconThemeData(color: Colors.white),
+    iconTheme: const IconThemeData(color: Colors.white),
     titleTextStyle: TextStyle(
-        fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+        fontSize: 20.sp, fontWeight: FontWeight.bold, color: Colors.white),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
@@ -340,7 +345,7 @@ final ThemeData darkTheme = ThemeData(
       textStyle: const TextStyle(fontWeight: FontWeight.bold), // Text style
       padding: const EdgeInsets.symmetric(
           horizontal: 16.0, vertical: 12.0), // Button padding
-      minimumSize: const Size(64, 36), // Minimum size for the button
+      minimumSize: Size(64.w, 36.h), // Minimum size for the button
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0), // Rounded corners
       ),
