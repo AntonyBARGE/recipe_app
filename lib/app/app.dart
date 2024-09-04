@@ -4,11 +4,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import 'home/home_view.dart';
-import 'sample_feature/sample_item_details_view.dart';
-import 'sample_feature/sample_item_list_view.dart';
-import 'settings/settings_controller.dart';
-import 'settings/settings_view.dart';
+import 'pages/meals/meals_page.dart';
+import 'pages/settings/settings_controller.dart';
+import 'pages/settings/settings_view.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -18,31 +16,26 @@ class MyApp extends StatelessWidget {
   }) : router = GoRouter(
           restorationScopeId: 'app',
           debugLogDiagnostics: true,
-          initialLocation: HomeView.routeName,
+          initialLocation: MealsPage.routeName,
           // extraCodec: const ExtraCodec(),
           routes: [
             GoRoute(
-              path: HomeView.routeName,
-              name: HomeView.routeName,
-              builder: (context, state) => HomeView(),
+              path: MealsPage.routeName,
+              name: MealsPage.routeName,
+              builder: (context, state) => MealsPage(),
+              // routes: [
+              //   GoRoute(
+              //     path: MealsPage.routeName,
+              //     name: MealsPage.routeName,
+              //     builder: (context, state) => MealsPage(),
+              //   ),
+              // ],
             ),
             GoRoute(
               path: SettingsView.routeName,
               name: SettingsView.routeName,
               builder: (context, state) =>
                   SettingsView(controller: settingsController),
-            ),
-            GoRoute(
-              path: SampleItemListView.routeName,
-              name: SampleItemListView.routeName,
-              builder: (context, state) => const SampleItemListView(),
-              routes: [
-                GoRoute(
-                  path: SampleItemDetailsView.routeName,
-                  name: SampleItemDetailsView.routeName,
-                  builder: (context, state) => const SampleItemDetailsView(),
-                ),
-              ],
             ),
             // StatefulShellRoute.indexedStack(
             //     builder: (context, state, navigationShell) => MultiBlocProvider(

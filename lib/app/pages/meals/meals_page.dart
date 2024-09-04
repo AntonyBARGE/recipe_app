@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/src/home/widgets/home_header.dart';
-import 'package:recipe_app/src/home/widgets/home_searchbar.dart';
+import 'package:recipe_app/app/pages/meals/widgets/meals_header.dart';
+import 'package:recipe_app/app/pages/meals/widgets/meals_searchbar.dart';
 
-import '../ingredient/ingredient.dart';
-import '../recipe/recipe.dart';
+import '../../models/ingredient.dart';
+import '../../models/recipe.dart';
 
-class HomeView extends StatelessWidget {
-  HomeView({super.key});
+class MealsPage extends StatelessWidget {
+  MealsPage({super.key});
 
   static const routeName = '/home';
   final List<Recipe> recipes = [
@@ -60,9 +60,9 @@ class HomeView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Column(
             children: [
-              const HomeHeader(),
+              const MealsHeader(),
               Expanded(
-                child: HomeSearchBar(
+                child: MealsSearchBar(
                   recipes: recipes,
                 ),
               ),

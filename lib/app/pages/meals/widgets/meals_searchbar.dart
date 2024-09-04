@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/src/recipe/recipe.dart';
+import 'package:recipe_app/app/models/recipe.dart';
 
-class HomeSearchBar extends StatefulWidget {
-  const HomeSearchBar({super.key, required this.recipes});
+class MealsSearchBar extends StatefulWidget {
+  const MealsSearchBar({super.key, required this.recipes});
 
   final List<Recipe> recipes;
 
   @override
-  State<HomeSearchBar> createState() => _HomeSearchBarState();
+  State<MealsSearchBar> createState() => _MealsSearchBarState();
 }
 
-class _HomeSearchBarState extends State<HomeSearchBar> {
+class _MealsSearchBarState extends State<MealsSearchBar> {
   String searchQuery = '';
 
   @override
