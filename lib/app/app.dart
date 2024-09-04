@@ -3,6 +3,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:recipe_app/app/pages/groceries/groceries_page.dart';
+import 'package:recipe_app/app/pages/layout/nav_bar.dart';
+import 'package:recipe_app/app/pages/planner/planner.dart';
 
 import 'pages/meals/meals_page.dart';
 import 'pages/settings/settings_controller.dart';
@@ -14,111 +17,57 @@ class MyApp extends StatelessWidget {
     super.key,
     required this.settingsController,
   }) : router = GoRouter(
-          restorationScopeId: 'app',
-          debugLogDiagnostics: true,
-          initialLocation: MealsPage.routeName,
-          // extraCodec: const ExtraCodec(),
-          routes: [
-            GoRoute(
-              path: MealsPage.routeName,
-              name: MealsPage.routeName,
-              builder: (context, state) => MealsPage(),
-              // routes: [
-              //   GoRoute(
-              //     path: MealsPage.routeName,
-              //     name: MealsPage.routeName,
-              //     builder: (context, state) => MealsPage(),
-              //   ),
-              // ],
-            ),
-            GoRoute(
-              path: SettingsView.routeName,
-              name: SettingsView.routeName,
-              builder: (context, state) =>
-                  SettingsView(controller: settingsController),
-            ),
-            // StatefulShellRoute.indexedStack(
-            //     builder: (context, state, navigationShell) => MultiBlocProvider(
-            //           providers: [
-            //             BlocProvider<ActivitiesBloc>(
-            //               create: (_) => ActivitiesBloc(),
-            //             ),
-            //             BlocProvider<MediasBloc>(
-            //               create: (_) => MediasBloc(),
-            //             ),
-            //             BlocProvider<PdfBloc>(
-            //               create: (_) => PdfBloc(),
-            //             ),
-            //           ],
-            //           child: ScaffoldWithNavBar(navigationShell: navigationShell),
-            //         ),
-            //     branches: [
-            //       StatefulShellBranch(
-            //         routes: <RouteBase>[
-            //           GoRoute(
-            //             path: RoutePath.home.key,
-            //             name: RoutePath.home.key,
-            //             builder: (context, state) {
-            //               return HomeScreen();
-            //             },
-            //             routes: [
-            //               GoRoute(
-            //                 path: RoutePath.activity.key,
-            //                 name: RoutePath.activity.key,
-            //                 builder: (context, state) => ActivityDetailsScreen(
-            //                   activity: state.extra as ActivityEntity,
-            //                 ),
-            //               ),
-            //               GoRoute(
-            //                 path: RoutePath.pdf.key,
-            //                 name: RoutePath.pdf.key,
-            //                 builder: (context, state) => PDFScreen(
-            //                   path: state.extra as String,
-            //                 ),
-            //               ),
-            //             ],
-            //           ),
-            //         ],
-            //       ),
-            //       StatefulShellBranch(
-            //         routes: <RouteBase>[
-            //           GoRoute(
-            //             path: RoutePath.catalog.key,
-            //             name: RoutePath.catalog.key,
-            //             builder: (context, state) => const CatalogScreen(),
-            //           ),
-            //         ],
-            //       ),
-            //       StatefulShellBranch(
-            //         routes: <RouteBase>[
-            //           GoRoute(
-            //             path: RoutePath.configurator.key,
-            //             name: RoutePath.configurator.key,
-            //             builder: (context, state) => const CatalogScreen(),
-            //           ),
-            //         ],
-            //       ),
-            //       StatefulShellBranch(
-            //         routes: <RouteBase>[
-            //           GoRoute(
-            //             path: RoutePath.meeting.key,
-            //             name: RoutePath.meeting.key,
-            //             builder: (context, state) => const CatalogScreen(),
-            //           ),
-            //         ],
-            //       ),
-            //       StatefulShellBranch(
-            //         routes: <RouteBase>[
-            //           GoRoute(
-            //             path: RoutePath.customerService.key,
-            //             name: RoutePath.customerService.key,
-            //             builder: (context, state) => const CatalogScreen(),
-            //           ),
-            //         ],
-            //       ),
-            //     ]),
-          ],
-        );
+            restorationScopeId: 'app',
+            debugLogDiagnostics: true,
+            initialLocation: MealsPage.routeName,
+            // extraCodec: const ExtraCodec(),
+            routes: [
+              GoRoute(
+                path: SettingsView.routeName,
+                name: SettingsView.routeName,
+                builder: (context, state) =>
+                    SettingsView(controller: settingsController),
+              ),
+              StatefulShellRoute.indexedStack(
+                  builder: (context, state, navigationShell) =>
+                      ScaffoldWithNavBar(navigationShell: navigationShell),
+                  branches: [
+                    StatefulShellBranch(
+                      routes: <RouteBase>[
+                        GoRoute(
+                          path: MealsPage.routeName,
+                          name: MealsPage.routeName,
+                          builder: (context, state) => MealsPage(),
+                          // routes: [
+                          //   GoRoute(
+                          //     path: MealsPage.routeName,
+                          //     name: MealsPage.routeName,
+                          //     builder: (context, state) => MealsPage(),
+                          //   ),
+                          // ],
+                        ),
+                      ],
+                    ),
+                    StatefulShellBranch(
+                      routes: <RouteBase>[
+                        GoRoute(
+                          path: PlannerPage.routeName,
+                          name: PlannerPage.routeName,
+                          builder: (context, state) => const PlannerPage(),
+                        ),
+                      ],
+                    ),
+                    StatefulShellBranch(
+                      routes: <RouteBase>[
+                        GoRoute(
+                          path: GroceriesPage.routeName,
+                          name: GroceriesPage.routeName,
+                          builder: (context, state) => const GroceriesPage(),
+                        ),
+                      ],
+                    ),
+                  ]),
+            ]);
 
   final SettingsController settingsController;
   final GoRouter router;

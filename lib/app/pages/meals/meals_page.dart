@@ -8,7 +8,7 @@ import '../../models/recipe.dart';
 class MealsPage extends StatelessWidget {
   MealsPage({super.key});
 
-  static const routeName = '/home';
+  static const routeName = '/meals';
   final List<Recipe> recipes = [
     Recipe(
       name: 'Pancake',
