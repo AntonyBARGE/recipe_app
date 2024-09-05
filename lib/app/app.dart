@@ -8,6 +8,7 @@ import 'package:recipe_app/app/pages/layout/nav_bar.dart';
 import 'package:recipe_app/app/pages/planner/planner.dart';
 
 import 'pages/meals/meals_page.dart';
+import 'pages/meals/widgets/recipe_creation.dart';
 import 'pages/settings/settings_controller.dart';
 import 'pages/settings/settings_view.dart';
 
@@ -37,14 +38,15 @@ class MyApp extends StatelessWidget {
                         GoRoute(
                           path: MealsPage.routeName,
                           name: MealsPage.routeName,
-                          builder: (context, state) => MealsPage(),
-                          // routes: [
-                          //   GoRoute(
-                          //     path: MealsPage.routeName,
-                          //     name: MealsPage.routeName,
-                          //     builder: (context, state) => MealsPage(),
-                          //   ),
-                          // ],
+                          builder: (context, state) => const MealsPage(),
+                          routes: [
+                            GoRoute(
+                              path: RecipeCreationPage.routeName,
+                              name: RecipeCreationPage.routeName,
+                              builder: (context, state) =>
+                                  const RecipeCreationPage(),
+                            ),
+                          ],
                         ),
                       ],
                     ),

@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/app/models/recipe.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MealsSearchBar extends StatefulWidget {
-  const MealsSearchBar({super.key, required this.recipes});
+import '../../../repositories/recipe_repository.dart';
 
-  final List<Recipe> recipes;
+class MealsSearchBar extends ConsumerStatefulWidget {
+  const MealsSearchBar({super.key});
 
   @override
-  State<MealsSearchBar> createState() => _MealsSearchBarState();
+  MealsSearchBarState createState() => MealsSearchBarState();
 }
 
-class _MealsSearchBarState extends State<MealsSearchBar> {
-  String searchQuery = '';
+class MealsSearchBarState extends ConsumerState<MealsSearchBar> {
+  final searchQueryProvider = StateProvider<String>((ref) => '');
 
   @override
   Widget build(BuildContext context) {
+    final recipes = ref.watch(recipeRepositoryProvider);
     final theme = Theme.of(context).textTheme;
-    final filteredRecipes = widget.recipes
+    final searchQuery = ref.watch(searchQueryProvider);
+
+    final filteredRecipes = recipes
         .where((recipe) =>
             recipe.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
             recipe.ingredients.any((ingredient) => ingredient.name
@@ -35,9 +38,7 @@ class _MealsSearchBarState extends State<MealsSearchBar> {
               prefixIcon: Icon(Icons.search),
             ),
             onChanged: (value) {
-              setState(() {
-                searchQuery = value;
-              });
+              ref.read(searchQueryProvider.notifier).state = value;
             },
           ),
         ),
@@ -54,6 +55,9 @@ class _MealsSearchBarState extends State<MealsSearchBar> {
             itemBuilder: (context, index) {
               final recipe = filteredRecipes[index];
               return GestureDetector(
+                onTap: () {
+                  // Handle tap on the recipe card
+                },
                 child: Card(
                   elevation: 5,
                   shape: RoundedRectangleBorder(
@@ -66,10 +70,7 @@ class _MealsSearchBarState extends State<MealsSearchBar> {
                       children: [
                         Text(
                           recipe.name,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: theme.headlineMedium,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 10),

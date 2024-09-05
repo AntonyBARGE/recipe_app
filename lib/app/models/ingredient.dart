@@ -1,37 +1,41 @@
+import 'package:flutter/foundation.dart';
+
 class Ingredient {
   final String name;
   final double quantity;
   final Unit unit;
+  final Category? category;
 
   Ingredient({
     required this.name,
     required this.quantity,
     required this.unit,
+    this.category,
   });
 
   @override
   String toString() {
-    return '$quantity ${_unitToString(unit)} of $name';
+    return '$quantity${_unitToString(unit)} of $name';
   }
 
   String _unitToString(Unit unit) {
     switch (unit) {
       case Unit.gram:
-        return 'g';
+        return ' g';
       case Unit.kilogram:
-        return 'kg';
+        return ' kg';
       case Unit.milliliter:
-        return 'ml';
+        return ' ml';
       case Unit.liter:
-        return 'L';
+        return ' L';
       case Unit.teaspoon:
-        return 'cu';
+        return ' c.';
       case Unit.tablespoon:
-        return 'càs';
+        return ' c.à s.';
       case Unit.cup:
-        return 'verre';
+        return ' verre${quantity > 1 ? 's' : ''}';
       case Unit.piece:
-        return 'piece${quantity > 1 ? 's' : ''}';
+        return '';
       case Unit.pinch:
         return 'pincée${quantity > 1 ? 's' : ''}';
       default:
