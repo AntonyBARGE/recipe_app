@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:recipe_app/app/pages/meals/meals_page.dart';
 
 import '../../widgets/nav_bar.dart';
+import '../meals/widgets/recipe_creation.dart';
 
 /// Builds the "shell" for the app by building a Scaffold with a
 /// BottomNavigationBar, where [child] is placed in the body of the Scaffold.
@@ -25,27 +27,34 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    final currentLocation =
+        GoRouter.of(context).routeInformationProvider.value.uri.toString();
+    final isNavBarHidden = currentLocation ==
+        '${MealsPage.routeName}/${RecipeCreationPage.routeName}';
+
     return Scaffold(
       key: _scaffoldKey,
       body: widget.navigationShell,
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: currentIndex,
-        onTap: (index) => _onTap(context, index),
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant_menu),
-            label: 'Meals',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Planner',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Groceries',
-          ),
-        ],
-      ),
+      bottomNavigationBar: isNavBarHidden
+          ? null
+          : BottomNavBar(
+              currentIndex: currentIndex,
+              onTap: (index) => _onTap(context, index),
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.restaurant_menu),
+                  label: 'Meals',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_today),
+                  label: 'Planner',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.shopping_cart),
+                  label: 'Groceries',
+                ),
+              ],
+            ),
     );
   }
 

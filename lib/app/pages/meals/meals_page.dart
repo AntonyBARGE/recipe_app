@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:recipe_app/app/pages/meals/widgets/meals_header.dart';
 import 'package:recipe_app/app/pages/meals/widgets/meals_searchbar.dart';
 
-import 'widgets/meals_add_button.dart';
+import 'widgets/recipe_creation.dart';
 
 class MealsPage extends StatelessWidget {
   const MealsPage({super.key});
@@ -26,7 +27,12 @@ class MealsPage extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: const MealsAddButton(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.pushNamed(RecipeCreationPage.routeName);
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
