@@ -42,6 +42,59 @@ class Ingredient {
         return '';
     }
   }
+
+  static Ingredient fromString(String ingredientString) {
+    final quantityRegex = RegExp(r'([\d.]+)');
+    final unitRegex = RegExp(r'(g|kg|ml|L|c\.|c\.à s\.|verre|pincée)?');
+
+    final quantityMatch = quantityRegex.firstMatch(ingredientString);
+    final unitMatch = unitRegex.firstMatch(ingredientString);
+
+    final quantity =
+        quantityMatch != null ? double.parse(quantityMatch.group(1)!) : 1.0;
+
+    final unitString = unitMatch?.group(1) ?? '';
+    Unit unit;
+    switch (unitString) {
+      case 'g':
+        unit = Unit.gram;
+        break;
+      case 'kg':
+        unit = Unit.kilogram;
+        break;
+      case 'ml':
+        unit = Unit.milliliter;
+        break;
+      case 'L':
+        unit = Unit.liter;
+        break;
+      case 'c.':
+        unit = Unit.teaspoon;
+        break;
+      case 'c.à s.':
+        unit = Unit.tablespoon;
+        break;
+      case 'verre':
+        unit = Unit.cup;
+        break;
+      case 'pincée':
+        unit = Unit.pinch;
+        break;
+      default:
+        unit = Unit.piece;
+    }
+
+    final name = ingredientString
+        .replaceFirst(quantityMatch?.group(0) ?? '', '')
+        .replaceFirst(unitString, '')
+        .trim();
+
+    return Ingredient(
+      name: name,
+      quantity: quantity,
+      unit: unit,
+    );
+  }
 }
 
 enum Unit {
