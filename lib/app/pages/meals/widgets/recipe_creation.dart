@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:recipe_app/app/pages/meals/widgets/recipe_field.dart';
 
 import '../../../models/ingredient.dart';
 import '../../../models/recipe.dart';
 import '../../../models/recipe_category.dart';
 import '../../../repositories/recipe_repository.dart';
+import 'recipe_field.dart';
 
 class RecipeCreationPage extends ConsumerStatefulWidget {
   const RecipeCreationPage({super.key});
@@ -91,7 +90,7 @@ class RecipeCreationPageState extends ConsumerState<RecipeCreationPage> {
     );
   }
 
-  void _saveRecipe() {
+  Future<void> _saveRecipe() async {
     if (_formKey.currentState?.validate() ?? false) {
       final String name = ref.read(nameProvider);
       final String description = ref.read(descriptionProvider);
@@ -139,9 +138,7 @@ class RecipeCreationPageState extends ConsumerState<RecipeCreationPage> {
         instructions: instructions,
         nutrition: nutrition,
       );
-
-      ref.read(recipeRepositoryProvider.notifier).addRecipe(newRecipe);
-      context.pop();
+      await ref.read(recipeRepositoryProvider.notifier).addRecipe(newRecipe);
     }
   }
 }

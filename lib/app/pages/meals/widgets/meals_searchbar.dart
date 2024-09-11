@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../repositories/recipe_repository.dart';
+import '../meal_details_page.dart';
+import '../meals_page.dart';
 
 class MealsSearchBar extends ConsumerStatefulWidget {
   const MealsSearchBar({super.key});
@@ -56,7 +59,9 @@ class MealsSearchBarState extends ConsumerState<MealsSearchBar> {
               final recipe = filteredRecipes[index];
               return GestureDetector(
                 onTap: () {
-                  // Handle tap on the recipe card
+                  context.push(
+                    '${MealsPage.routeName}/${MealDetailsPage.routeName}/${recipe.id}',
+                  );
                 },
                 child: Card(
                   elevation: 5,

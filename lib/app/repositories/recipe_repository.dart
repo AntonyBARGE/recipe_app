@@ -17,10 +17,6 @@ class RecipeRepository extends StateNotifier<List<Recipe>> {
     return _database!;
   }
 
-  Future<void> _initialize() async {
-    await loadRecipes();
-  }
-
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'recipes.db');
     return await openDatabase(
@@ -49,35 +45,50 @@ class RecipeRepository extends StateNotifier<List<Recipe>> {
     );
   }
 
-  Future<void> loadRecipes() async {
+  Future<void> _initialize() async {
+    final recipes = await loadRecipesFromDb();
+    state = recipes;
+  }
+
+  Future<List<Recipe>> loadRecipesFromDb() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('recipes');
-    state = List.generate(maps.length, (i) {
-      return Recipe.fromMap(maps[i]);
-    });
+    return List.generate(maps.length, (i) => Recipe.fromMap(maps[i]));
   }
 
-  Future<void> addRecipe(Recipe recipe) async {
+  Future<Recipe> addRecipe(Recipe recipe) async {
+    final id = await _persistRecipe(recipe);
+    final newRecipe = recipe.copyWith(id: id);
+    state = [...state, newRecipe];
+    return newRecipe;
+  }
+
+  void updateRecipe(Recipe updatedRecipe) {
+    state = state
+        .map((recipe) => recipe.id == updatedRecipe.id ? updatedRecipe : recipe)
+        .toList();
+    _persistRecipe(updatedRecipe);
+  }
+
+  void deleteRecipe(int id) {
+    state = state.where((recipe) => recipe.id != id).toList();
+    _deleteRecipeFromDb(id);
+  }
+
+  Future<int> _persistRecipe(Recipe recipe) async {
     final db = await database;
-    await db.insert('recipes', recipe.toMap());
-    state = [...state, recipe.copyWith()];
+    if (recipe.id == null) {
+      return await db.insert('recipes', recipe.toMap());
+    } else {
+      await db.update('recipes', recipe.toMap(),
+          where: 'id = ?', whereArgs: [recipe.id]);
+      return recipe.id!;
+    }
   }
 
-  Future<void> updateRecipe(Recipe recipe) async {
-    final db = await database;
-    await db.update(
-      'recipes',
-      recipe.toMap(),
-      where: 'id = ?',
-      whereArgs: [recipe.id],
-    );
-    state = state.map((r) => r.id == recipe.id ? recipe : r).toList();
-  }
-
-  Future<void> deleteRecipe(int id) async {
+  Future<void> _deleteRecipeFromDb(int id) async {
     final db = await database;
     await db.delete('recipes', where: 'id = ?', whereArgs: [id]);
-    state = state.where((r) => r.id != id).toList();
   }
 }
 

@@ -7,12 +7,12 @@ import 'package:recipe_app/app/pages/groceries/groceries_page.dart';
 import 'package:recipe_app/app/pages/layout/nav_bar.dart';
 import 'package:recipe_app/app/pages/planner/planner.dart';
 
+import 'pages/meals/meal_details_page.dart';
 import 'pages/meals/meals_page.dart';
 import 'pages/meals/widgets/recipe_creation.dart';
 import 'pages/settings/settings_controller.dart';
 import 'pages/settings/settings_view.dart';
 
-/// The Widget that configures your application.
 class MyApp extends StatelessWidget {
   MyApp({
     super.key,
@@ -45,6 +45,15 @@ class MyApp extends StatelessWidget {
                               name: RecipeCreationPage.routeName,
                               builder: (context, state) =>
                                   const RecipeCreationPage(),
+                            ),
+                            GoRoute(
+                              path: '${MealDetailsPage.routeName}/:id',
+                              name: MealDetailsPage.routeName,
+                              builder: (context, state) {
+                                final recipeId =
+                                    int.parse(state.pathParameters['id']!);
+                                return MealDetailsPage(recipeId: recipeId);
+                              },
                             ),
                           ],
                         ),

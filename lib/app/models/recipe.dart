@@ -109,6 +109,7 @@ $nutritionList
   }
 
   Recipe copyWith({
+    int? id,
     String? name,
     String? description,
     String? pictureUrl,
@@ -123,6 +124,7 @@ $nutritionList
     Map<String, String>? nutrition,
   }) {
     return Recipe(
+      id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       pictureUrl: pictureUrl ?? this.pictureUrl,
