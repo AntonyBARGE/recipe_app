@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:recipe_app/app/pages/meals/meals_page.dart';
 
 import '../../widgets/nav_bar.dart';
-import '../meals/widgets/recipe_creation.dart';
+import '../meals/creation/recipe_creation.dart';
 
 /// Builds the "shell" for the app by building a Scaffold with a
 /// BottomNavigationBar, where [child] is placed in the body of the Scaffold.

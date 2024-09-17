@@ -7,9 +7,9 @@ import 'package:recipe_app/app/pages/groceries/groceries_page.dart';
 import 'package:recipe_app/app/pages/layout/nav_bar.dart';
 import 'package:recipe_app/app/pages/planner/planner.dart';
 
-import 'pages/meals/meal_details_page.dart';
+import 'pages/meals/creation/recipe_creation.dart';
+import 'pages/meals/details/meal_details_page.dart';
 import 'pages/meals/meals_page.dart';
-import 'pages/meals/widgets/recipe_creation.dart';
 import 'pages/settings/settings_controller.dart';
 import 'pages/settings/settings_view.dart';
 

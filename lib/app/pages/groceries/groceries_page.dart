@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'category/categories_list.dart';
+
 class GroceriesPage extends StatelessWidget {
   const GroceriesPage({super.key});
 
@@ -7,13 +9,9 @@ class GroceriesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: SafeArea(
-        child: Container(
-          margin: const EdgeInsets.all(8.0),
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          color: Colors.red,
-        ),
+        child: IngredientCategoriesList(),
       ),
     );
   }

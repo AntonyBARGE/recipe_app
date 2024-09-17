@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/ingredient.dart';
-import '../../repositories/recipe_repository.dart';
+import '../../../models/ingredient_with_quantity.dart';
+import '../../../repositories/recipe_repository.dart';
 
 class MealDetailsPage extends ConsumerWidget {
   final int recipeId;
@@ -73,7 +73,7 @@ class MealDetailsPage extends ConsumerWidget {
             ...recipe.ingredients.map((ingredient) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Text(
-                    '${ingredient.quantity}${ingredient.unit == Unit.piece ? '' : ' ${ingredient.unit.toString().split('.').last}'} ${ingredient.name}',
+                    '${ingredient.quantity}${ingredient.unit == Unit.piece ? '' : ' ${ingredient.unit.toString().split('.').last}'} ${ingredient.ingredient.name}',
                     style: const TextStyle(fontSize: 16.0),
                   ),
                 )),

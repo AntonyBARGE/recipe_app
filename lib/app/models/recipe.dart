@@ -1,4 +1,5 @@
-import 'ingredient.dart';
+import 'package:recipe_app/app/models/ingredient_with_quantity.dart';
+
 import 'recipe_category.dart';
 
 class Recipe {
@@ -12,7 +13,7 @@ class Recipe {
   final int cookTime;
   final int totalTime;
   final int numberOfPersons;
-  final List<Ingredient> ingredients;
+  final List<IngredientWithQuantity> ingredients;
   final List<String> instructions;
   final Map<String, String>? nutrition;
 
@@ -42,39 +43,30 @@ class Recipe {
       'prepTime': prepTime,
       'cookTime': cookTime,
       'totalTime': totalTime,
+      'categories': categories,
       'numberOfPersons': numberOfPersons,
-      'ingredients': ingredients.map((e) => e.toString()).join(','),
-      'instructions': instructions.join(','),
-      'nutrition':
-          nutrition?.entries.map((e) => '${e.key}:${e.value}').join(','),
+      'ingredients': ingredients,
+      'instructions': instructions,
+      'nutrition': nutrition,
     };
   }
 
-  factory Recipe.fromMap(Map<String, dynamic> map) {
+  factory Recipe.fromMap(
+      Map<String, dynamic> map, List<RecipeCategory> categories) {
     return Recipe(
       id: map['id'],
       name: map['name'],
       description: map['description'],
       pictureUrl: map['pictureUrl'],
       note: map['note'],
-      categories: [],
       prepTime: map['prepTime'],
       cookTime: map['cookTime'],
       totalTime: map['totalTime'],
       numberOfPersons: map['numberOfPersons'],
-      ingredients: (map['ingredients'] as String)
-          .split(',')
-          .map((e) => Ingredient.fromString(e))
-          .toList(),
-      instructions: (map['instructions'] as String).split(',').toList(),
-      nutrition: map['nutrition'] != null
-          ? Map.fromEntries(
-              (map['nutrition'] as String).split(',').map((e) {
-                final parts = e.split(':');
-                return MapEntry(parts[0].trim(), parts[1].trim());
-              }),
-            )
-          : null,
+      categories: categories,
+      ingredients: map['ingredients'] ?? [],
+      instructions: map['instructions'] ?? [],
+      nutrition: map['nutrition'] ?? [],
     );
   }
 
@@ -119,7 +111,7 @@ $nutritionList
     int? cookTime,
     int? totalTime,
     int? numberOfPersons,
-    List<Ingredient>? ingredients,
+    List<IngredientWithQuantity>? ingredients,
     List<String>? instructions,
     Map<String, String>? nutrition,
   }) {

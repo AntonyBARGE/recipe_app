@@ -1,110 +1,49 @@
-import 'package:flutter/foundation.dart';
+import '../modules/ingredient-category/domain/entities/ingredient_category_entity.dart';
 
 class Ingredient {
+  final int? id;
   final String name;
-  final double quantity;
-  final Unit unit;
-  final Category? category;
+  final String? pictureUrl;
+  final IngredientCategoryEntity? category;
 
   Ingredient({
+    this.id,
     required this.name,
-    required this.quantity,
-    required this.unit,
+    this.pictureUrl,
     this.category,
   });
 
-  @override
-  String toString() {
-    return '$quantity${_unitToString(unit)} of $name';
-  }
-
-  String _unitToString(Unit unit) {
-    switch (unit) {
-      case Unit.gram:
-        return ' g';
-      case Unit.kilogram:
-        return ' kg';
-      case Unit.milliliter:
-        return ' ml';
-      case Unit.liter:
-        return ' L';
-      case Unit.teaspoon:
-        return ' c.';
-      case Unit.tablespoon:
-        return ' c.à s.';
-      case Unit.cup:
-        return ' verre${quantity > 1 ? 's' : ''}';
-      case Unit.piece:
-        return '';
-      case Unit.pinch:
-        return 'pincée${quantity > 1 ? 's' : ''}';
-      default:
-        return '';
-    }
-  }
-
-  static Ingredient fromString(String ingredientString) {
-    final quantityRegex = RegExp(r'([\d.]+)');
-    final unitRegex = RegExp(r'(g|kg|ml|L|c\.|c\.à s\.|verre|pincée)?');
-
-    final quantityMatch = quantityRegex.firstMatch(ingredientString);
-    final unitMatch = unitRegex.firstMatch(ingredientString);
-
-    final quantity =
-        quantityMatch != null ? double.parse(quantityMatch.group(1)!) : 1.0;
-
-    final unitString = unitMatch?.group(1) ?? '';
-    Unit unit;
-    switch (unitString) {
-      case 'g':
-        unit = Unit.gram;
-        break;
-      case 'kg':
-        unit = Unit.kilogram;
-        break;
-      case 'ml':
-        unit = Unit.milliliter;
-        break;
-      case 'L':
-        unit = Unit.liter;
-        break;
-      case 'c.':
-        unit = Unit.teaspoon;
-        break;
-      case 'c.à s.':
-        unit = Unit.tablespoon;
-        break;
-      case 'verre':
-        unit = Unit.cup;
-        break;
-      case 'pincée':
-        unit = Unit.pinch;
-        break;
-      default:
-        unit = Unit.piece;
-    }
-
-    final name = ingredientString
-        .replaceFirst(quantityMatch?.group(0) ?? '', '')
-        .replaceFirst(unitString, '')
-        .trim();
-
+  Ingredient copyWith({
+    int? id,
+    String? name,
+    String? pictureUrl,
+    IngredientCategoryEntity? category,
+  }) {
     return Ingredient(
-      name: name,
-      quantity: quantity,
-      unit: unit,
+      id: id ?? this.id,
+      name: name ?? this.name,
+      pictureUrl: pictureUrl ?? this.pictureUrl,
+      category: category ?? this.category,
     );
   }
-}
 
-enum Unit {
-  gram,
-  kilogram,
-  milliliter,
-  liter,
-  teaspoon,
-  tablespoon,
-  cup,
-  piece,
-  pinch,
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'pictureUrl': pictureUrl,
+      'categoryId': category?.id,
+    };
+  }
+
+  static Ingredient fromMap(Map<String, dynamic> map) {
+    return Ingredient(
+      id: map['id'],
+      name: map['name'],
+      pictureUrl: map['pictureUrl'],
+      category: map['categoryId'] != null
+          ? IngredientCategoryEntity(id: map['categoryId'], name: 'oui')
+          : null,
+    );
+  }
 }

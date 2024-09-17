@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:recipe_app/app/pages/meals/widgets/meals_header.dart';
-import 'package:recipe_app/app/pages/meals/widgets/meals_searchbar.dart';
 
-import 'widgets/recipe_creation.dart';
+import '../ingredients/ingredients_searchbar.dart';
+import 'creation/recipe_creation.dart';
 
 class MealsPage extends StatelessWidget {
   const MealsPage({super.key});
@@ -21,7 +21,7 @@ class MealsPage extends StatelessWidget {
             children: [
               MealsHeader(),
               Expanded(
-                child: MealsSearchBar(),
+                child: IngredientsSearchBar(),
               ),
             ],
           ),

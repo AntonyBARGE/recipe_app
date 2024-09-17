@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:recipe_app/app/pages/meals/meals_page.dart';
 
-import '../../../repositories/recipe_repository.dart';
-import '../details/meal_details_page.dart';
-import '../meals_page.dart';
+import '../../repositories/ingredient_repository.dart';
+import '../meals/details/meal_details_page.dart';
 
-class MealsSearchBar extends ConsumerStatefulWidget {
-  const MealsSearchBar({super.key});
+class IngredientsSearchBar extends ConsumerStatefulWidget {
+  const IngredientsSearchBar({super.key});
 
   @override
-  MealsSearchBarState createState() => MealsSearchBarState();
+  IngredientsSearchBarState createState() => IngredientsSearchBarState();
 }
 
-class MealsSearchBarState extends ConsumerState<MealsSearchBar> {
+class IngredientsSearchBarState extends ConsumerState<IngredientsSearchBar> {
   final searchQueryProvider = StateProvider<String>((ref) => '');
 
   @override
   Widget build(BuildContext context) {
-    final recipes = ref.watch(recipeRepositoryProvider);
+    final ingredients = ref.watch(ingredientRepositoryProvider);
     final theme = Theme.of(context).textTheme;
     final searchQuery = ref.watch(searchQueryProvider);
 
-    final filteredRecipes = recipes
-        .where((recipe) =>
-            recipe.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
-            recipe.ingredients.any((ingredient) => ingredient.ingredient.name
+    final filteredIngredients = ingredients
+        .where((ingredient) =>
+            ingredient.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
+            ingredient.category!.name
                 .toLowerCase()
-                .contains(searchQuery.toLowerCase())))
+                .contains(searchQuery.toLowerCase()))
         .toList();
 
     return Column(
@@ -36,7 +36,7 @@ class MealsSearchBarState extends ConsumerState<MealsSearchBar> {
           padding: const EdgeInsets.all(10.0),
           child: TextField(
             decoration: const InputDecoration(
-              labelText: 'Search Recipe',
+              labelText: 'Search Ingredient',
               border: OutlineInputBorder(),
               prefixIcon: Icon(Icons.search),
             ),
@@ -54,13 +54,13 @@ class MealsSearchBarState extends ConsumerState<MealsSearchBar> {
               mainAxisSpacing: 10,
               childAspectRatio: 2 / 3,
             ),
-            itemCount: filteredRecipes.length,
+            itemCount: filteredIngredients.length,
             itemBuilder: (context, index) {
-              final recipe = filteredRecipes[index];
+              final ingredient = filteredIngredients[index];
               return GestureDetector(
                 onTap: () {
                   context.push(
-                    '${MealsPage.routeName}/${MealDetailsPage.routeName}/${recipe.id}',
+                    '${MealsPage.routeName}/${MealDetailsPage.routeName}/${ingredient.id}',
                   );
                 },
                 child: Card(
@@ -74,15 +74,13 @@ class MealsSearchBarState extends ConsumerState<MealsSearchBar> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          recipe.name,
+                          ingredient.name,
                           style: theme.headlineMedium,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          recipe.ingredients
-                              .map((ingredient) => ingredient.ingredient.name)
-                              .join(', '),
+                          ingredient.toString(),
                           textAlign: TextAlign.center,
                         ),
                       ],

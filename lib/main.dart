@@ -5,8 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'app/app.dart';
 import 'app/pages/settings/settings_controller.dart';
 import 'app/pages/settings/settings_service.dart';
+import 'core/di/locator.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  setupLocator();
   // Set up the SettingsController, which will glue user settings to multiple
   // Flutter Widgets.
   final settingsController = SettingsController(SettingsService());

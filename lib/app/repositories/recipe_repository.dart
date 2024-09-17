@@ -3,6 +3,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../models/recipe.dart';
+import '../models/recipe_category.dart';
 
 class RecipeRepository extends StateNotifier<List<Recipe>> {
   RecipeRepository() : super([]) {
@@ -22,8 +23,8 @@ class RecipeRepository extends StateNotifier<List<Recipe>> {
     return await openDatabase(
       path,
       version: 1,
-      onCreate: (db, version) {
-        return db.execute(
+      onCreate: (db, version) async {
+        await db.execute(
           '''
           CREATE TABLE recipes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,6 +42,27 @@ class RecipeRepository extends StateNotifier<List<Recipe>> {
           )
           ''',
         );
+
+        await db.execute(
+          '''
+          CREATE TABLE recipe_categories (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT
+          )
+          ''',
+        );
+
+        await db.execute(
+          '''
+          CREATE TABLE recipe_category_relations (
+            recipeId INTEGER,
+            categoryId INTEGER,
+            PRIMARY KEY (recipeId, categoryId),
+            FOREIGN KEY (recipeId) REFERENCES recipes(id) ON DELETE CASCADE,
+            FOREIGN KEY (categoryId) REFERENCES recipe_categories(id) ON DELETE CASCADE
+          )
+          ''',
+        );
       },
     );
   }
@@ -52,8 +74,38 @@ class RecipeRepository extends StateNotifier<List<Recipe>> {
 
   Future<List<Recipe>> loadRecipesFromDb() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('recipes');
-    return List.generate(maps.length, (i) => Recipe.fromMap(maps[i]));
+    final List<Map<String, dynamic>> recipeMaps = await db.query('recipes');
+
+    return Future.wait(recipeMaps.map<Future<Recipe>>((recipeMap) async {
+      final List<Map<String, dynamic>> categoryMaps = await db.rawQuery(
+        '''
+        SELECT rc.* FROM recipe_categories rc
+        INNER JOIN recipe_category_relations rcr ON rc.id = rcr.categoryId
+        WHERE rcr.recipeId = ?
+        ''',
+        [recipeMap['id']],
+      );
+
+      final categories =
+          categoryMaps.map((map) => RecipeCategory.fromMap(map)).toList();
+
+      return Recipe.fromMap(recipeMap, categories);
+    }).toList());
+  }
+
+  Future<RecipeCategory?> getCategoryById(int id) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'recipe_categories',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return RecipeCategory.fromMap(maps.first);
+    } else {
+      return null;
+    }
   }
 
   Future<Recipe> addRecipe(Recipe recipe) async {
@@ -64,9 +116,9 @@ class RecipeRepository extends StateNotifier<List<Recipe>> {
   }
 
   void updateRecipe(Recipe updatedRecipe) {
-    state = state
-        .map((recipe) => recipe.id == updatedRecipe.id ? updatedRecipe : recipe)
-        .toList();
+    state = state.map((recipe) {
+      return recipe.id == updatedRecipe.id ? updatedRecipe : recipe;
+    }).toList();
     _persistRecipe(updatedRecipe);
   }
 
@@ -77,13 +129,28 @@ class RecipeRepository extends StateNotifier<List<Recipe>> {
 
   Future<int> _persistRecipe(Recipe recipe) async {
     final db = await database;
+    final recipeMap = recipe.toMap();
+
+    int recipeId;
     if (recipe.id == null) {
-      return await db.insert('recipes', recipe.toMap());
+      recipeId = await db.insert('recipes', recipeMap);
     } else {
-      await db.update('recipes', recipe.toMap(),
+      recipeId = recipe.id!;
+      await db.update('recipes', recipeMap,
           where: 'id = ?', whereArgs: [recipe.id]);
-      return recipe.id!;
     }
+
+    await db.delete('recipe_category_relations',
+        where: 'recipeId = ?', whereArgs: [recipeId]);
+
+    for (final category in recipe.categories) {
+      await db.insert('recipe_category_relations', {
+        'recipeId': recipeId,
+        'categoryId': category.id,
+      });
+    }
+
+    return recipeId;
   }
 
   Future<void> _deleteRecipeFromDb(int id) async {
