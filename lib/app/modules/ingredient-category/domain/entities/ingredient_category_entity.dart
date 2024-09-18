@@ -14,4 +14,14 @@ class IngredientCategoryEntity extends Equatable implements BaseEntity {
 
   @override
   List<Object?> get props => [name, id];
+
+  IngredientCategoryEntity copyWith({
+    String? name,
+    int? id,
+  }) {
+    return IngredientCategoryEntity(
+      name: name ?? this.name,
+      id: id ?? this.id,
+    );
+  }
 }

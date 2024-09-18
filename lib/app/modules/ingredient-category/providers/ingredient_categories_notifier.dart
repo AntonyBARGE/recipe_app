@@ -26,7 +26,6 @@ class IngredientCategoriesNotifier
     state = IngredientCategoriesLoading();
     try {
       final result = await _retrieveIngredientCategories(NoParams());
-      print('result: $result');
       if (result.isNotEmpty) {
         state = IngredientCategoriesLoaded(result);
       } else {

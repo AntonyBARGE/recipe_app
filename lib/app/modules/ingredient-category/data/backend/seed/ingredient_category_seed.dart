@@ -30,7 +30,7 @@ class IngredientCategorySeed {
         batch.insert(
           DatabaseStore.INGREDIENT_CATEGORY_DATA,
           category,
-          conflictAlgorithm: ConflictAlgorithm.replace,
+          conflictAlgorithm: ConflictAlgorithm.ignore,
         );
       }
       await batch.commit();

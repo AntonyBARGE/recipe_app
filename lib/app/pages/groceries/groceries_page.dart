@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'category/categories_list.dart';
+import 'groceries_list.dart';
 
 class GroceriesPage extends StatelessWidget {
   const GroceriesPage({super.key});
@@ -11,7 +11,7 @@ class GroceriesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: SafeArea(
-        child: IngredientCategoriesList(),
+        child: GroceriesList(),
       ),
     );
   }
