@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:recipe_app/app/pages/groceries/category/category_dropdown.dart';
 import 'package:uuid/uuid.dart';
@@ -78,6 +80,33 @@ class IngredientCategoriesListState extends State<IngredientCategoriesList> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
+    const Color draggableItemColor = Colors.red;
+
+    Widget proxyDecorator(
+        Widget child, int index, Animation<double> animation) {
+      final category =
+          _categories.firstWhere((category) => category.position == index + 1);
+
+      return AnimatedBuilder(
+        animation: animation,
+        builder: (BuildContext context, Widget? child) {
+          final double animValue = Curves.easeInOut.transform(animation.value);
+          final double elevation = lerpDouble(1, 6, animValue)!;
+          final double scale = lerpDouble(1, 1.05, animValue)!;
+          return Transform.scale(
+            scale: scale,
+            child: IngredientCategoryDropdown(
+              key: ValueKey(category.id),
+              category: category,
+              toggleExpansion: _toggleExpansion,
+              isExpanded: _expandedStates[category.position] ?? false,
+              elevation: elevation,
+            ),
+          );
+        },
+        child: child,
+      );
+    }
 
     return Column(
       children: [
@@ -96,6 +125,7 @@ class IngredientCategoriesListState extends State<IngredientCategoriesList> {
               );
             },
             itemCount: _categories.length,
+            proxyDecorator: proxyDecorator,
           ),
         ),
         if (_isCreatingCategory)
