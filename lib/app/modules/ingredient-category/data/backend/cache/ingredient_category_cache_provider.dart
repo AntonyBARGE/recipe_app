@@ -17,8 +17,9 @@ Future<Database> initializeIngredientCategoryDatabase() async {
       db.execute(
         '''
         CREATE TABLE ${DatabaseStore.INGREDIENT_CATEGORY_DATA}(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT
+          id TEXT PRIMARY KEY,
+          name TEXT,
+          position INTEGER
         )
         ''',
       );
@@ -59,17 +60,21 @@ class IngredientCategoryCacheProvider {
     throw NotFoundInCacheException();
   }
 
-  Future<void> updateIngredientCategory(
-      IngredientCategoryModel category) async {
-    await _database.update(
-      DatabaseStore.INGREDIENT_CATEGORY_DATA,
-      category.toJson(),
-      where: 'id = ?',
-      whereArgs: [category.id],
-    );
+  Future<void> updateIngredientCategories(
+      List<IngredientCategoryModel> categories) async {
+    final batch = _database.batch();
+    for (var category in categories) {
+      batch.update(
+        DatabaseStore.INGREDIENT_CATEGORY_DATA,
+        category.toJson(),
+        where: 'id = ?',
+        whereArgs: [category.id],
+      );
+    }
+    await batch.commit(noResult: true);
   }
 
-  Future<void> deleteIngredientCategory(int id) async {
+  Future<void> deleteIngredientCategory(String id) async {
     await _database.delete(
       DatabaseStore.INGREDIENT_CATEGORY_DATA,
       where: 'id = ?',

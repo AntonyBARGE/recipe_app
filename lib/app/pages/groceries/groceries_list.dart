@@ -14,17 +14,16 @@ class GroceriesList extends ConsumerWidget {
     final state = ref.watch(ingredientCategoriesNotifierProvider);
     final theme = Theme.of(context).textTheme;
 
-    void addCategory(String categoryName) {
+    void addCategory(IngredientCategoryEntity newCategory) {
       ref
           .read(ingredientCategoriesNotifierProvider.notifier)
-          .addIngredientCategory(
-            IngredientCategoryEntity(
-                name: categoryName,
-                id: (state as IngredientCategoriesLoaded)
-                        .ingredientCategories
-                        .length +
-                    1),
-          );
+          .addIngredientCategory(newCategory);
+    }
+
+    void updateCategories(List<IngredientCategoryEntity> categories) {
+      ref
+          .read(ingredientCategoriesNotifierProvider.notifier)
+          .updateIngredientCategories(categories);
     }
 
     if (state is EmptyIngredientCategories) {
@@ -49,6 +48,7 @@ class GroceriesList extends ConsumerWidget {
       return IngredientCategoriesList(
         ingredientCategories: state.ingredientCategories,
         addCategory: addCategory,
+        updateCategories: updateCategories,
       );
     }
 

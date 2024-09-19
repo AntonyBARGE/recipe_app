@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipe_app/app/modules/ingredient-category/domain/entities/ingredient_category_entity.dart';
 import 'package:recipe_app/app/modules/ingredient-category/domain/uses_cases/create_ingredient_category.dart';
 import 'package:recipe_app/app/modules/ingredient-category/domain/uses_cases/delete_ingredient_category.dart';
-import 'package:recipe_app/app/modules/ingredient-category/domain/uses_cases/update_ingredient_category.dart';
+import 'package:recipe_app/app/modules/ingredient-category/domain/uses_cases/update_ingredient_categories.dart';
 import 'package:recipe_app/core/di/locator.dart';
 
 import '../../../../core/clean-archi/clean_archi_base_components.dart';
@@ -16,7 +16,7 @@ class IngredientCategoriesNotifier
       locator.get();
   final CreateIngredientCategory _createIngredientCategories = locator.get();
   final DeleteIngredientCategory _deleteIngredientCategories = locator.get();
-  final UpdateIngredientCategory _updateIngredientCategories = locator.get();
+  final UpdateIngredientCategories _updateIngredientCategories = locator.get();
 
   IngredientCategoriesNotifier() : super(IngredientCategoriesLoading()) {
     fetchIngredientCategories();
@@ -60,8 +60,8 @@ class IngredientCategoriesNotifier
     }
   }
 
-  Future<void> updateIngredientCategory(
-      IngredientCategoryEntity ingredientCategory) async {
+  Future<void> updateIngredientCategories(
+      List<IngredientCategoryEntity> ingredientCategories) async {
     List<IngredientCategoryEntity> oldList = [];
     if (state is IngredientCategoriesLoaded) {
       oldList = [...(state as IngredientCategoriesLoaded).ingredientCategories];
@@ -71,17 +71,20 @@ class IngredientCategoriesNotifier
       if (oldList.isEmpty) {
         state = EmptyIngredientCategories();
       } else {
-        final updatedIngredient =
-            await _updateIngredientCategories(ingredientCategory);
-        final index = oldList
-            .indexWhere((category) => category.id == updatedIngredient.id);
-        if (index != -1) {
-          oldList[index] = updatedIngredient;
+        final Map<String, int> idToIndex = {
+          for (var i = 0; i < oldList.length; i++) oldList[i].id: i
+        };
+        for (var updatedCategory in ingredientCategories) {
+          final index = idToIndex[updatedCategory.id];
+          if (index != null) {
+            oldList[index] = updatedCategory;
+          }
         }
         state = IngredientCategoriesLoaded([...oldList]);
+        await _updateIngredientCategories(ingredientCategories);
       }
     } catch (e) {
-      logger.e("IngredientCategoriesNotifier.addIngredientCategory error");
+      logger.e("IngredientCategoriesNotifier.updateIngredientCategories error");
       logger.e(e);
       if (oldList.isEmpty) {
         state = EmptyIngredientCategories();
@@ -91,7 +94,7 @@ class IngredientCategoriesNotifier
     }
   }
 
-  Future<void> deleteIngredientCategory(int id) async {
+  Future<void> deleteIngredientCategory(String id) async {
     List<IngredientCategoryEntity> oldList = [];
     if (state is IngredientCategoriesLoaded) {
       oldList = [...(state as IngredientCategoriesLoaded).ingredientCategories];

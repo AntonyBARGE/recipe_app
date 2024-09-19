@@ -9,7 +9,8 @@ class IngredientCategoryMapper extends Mapper {
       Map<BaseModel, Populator> populators) {
     final entity = IngredientCategoryEntity(
       name: "name",
-      id: -1,
+      id: "unknown",
+      position: -1,
     );
 
     populators.forEach((model, populator) {
@@ -26,6 +27,7 @@ class IngredientCategoryMapper extends Mapper {
       return IngredientCategoryModel(
         id: entity.id,
         name: entity.name,
+        position: entity.position,
       );
     } else {
       throw ArgumentError('Invalid entity type');
@@ -40,5 +42,6 @@ class IngredientCategoryModelPopulator
       IngredientCategoryEntity ingredientCategoryEntity) {
     ingredientCategoryEntity.name = ingredientCategoryModel.name;
     ingredientCategoryEntity.id = ingredientCategoryModel.id;
+    ingredientCategoryEntity.position = ingredientCategoryModel.position;
   }
 }

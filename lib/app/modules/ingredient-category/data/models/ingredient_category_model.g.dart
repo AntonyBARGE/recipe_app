@@ -10,7 +10,8 @@ IngredientCategoryModel _$IngredientCategoryModelFromJson(
         Map<String, dynamic> json) =>
     IngredientCategoryModel(
       name: json['name'] as String,
-      id: (json['id'] as num).toInt(),
+      id: json['id'] as String,
+      position: (json['position'] as num).toInt(),
     );
 
 Map<String, dynamic> _$IngredientCategoryModelToJson(
@@ -18,4 +19,5 @@ Map<String, dynamic> _$IngredientCategoryModelToJson(
     <String, dynamic>{
       'name': instance.name,
       'id': instance.id,
+      'position': instance.position,
     };

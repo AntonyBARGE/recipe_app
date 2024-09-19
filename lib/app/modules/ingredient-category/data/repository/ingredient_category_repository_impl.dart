@@ -79,17 +79,18 @@ class IngredientCategoryRepositoryImpl implements IngredientCategoryRepository {
   }
 
   @override
-  Future<IngredientCategoryEntity> updateIngredientCategory({
-    required IngredientCategoryEntity updatedCategory,
+  Future<List<IngredientCategoryEntity>> updateIngredientCategories({
+    required List<IngredientCategoryEntity> updatedCategories,
   }) async {
     try {
-      final IngredientCategoryModel updatedCategoryModel =
-          _ingredientCategoryMapper.mapEntityToModel(updatedCategory);
-
+      List<IngredientCategoryModel> updatedCategoryModels = [];
+      for (var category in updatedCategories) {
+        updatedCategoryModels
+            .add(_ingredientCategoryMapper.mapEntityToModel(category));
+      }
       await _ingredientCategoryCacheProvider
-          .updateIngredientCategory(updatedCategoryModel);
-
-      return updatedCategory;
+          .updateIngredientCategories(updatedCategoryModels);
+      return updatedCategories;
     } catch (e) {
       logger.e("Error updating ingredient category: $e");
       rethrow;
@@ -98,7 +99,7 @@ class IngredientCategoryRepositoryImpl implements IngredientCategoryRepository {
 
   @override
   Future<void> deleteIngredientCategory({
-    required int categoryId,
+    required String categoryId,
   }) async {
     try {
       await _ingredientCategoryCacheProvider

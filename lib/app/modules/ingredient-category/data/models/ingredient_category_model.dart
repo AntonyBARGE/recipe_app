@@ -10,15 +10,17 @@ part 'ingredient_category_model.g.dart';
 @JsonSerializable()
 class IngredientCategoryModel extends Equatable implements BaseModel {
   final String name;
-  final int id;
+  final String id;
+  final int position;
 
   const IngredientCategoryModel({
     required this.name,
     required this.id,
+    required this.position,
   });
 
   @override
-  List<Object?> get props => [name, id];
+  List<Object?> get props => [name, id, position];
 
   factory IngredientCategoryModel.fromJson(Map<String, dynamic> json) =>
       _$IngredientCategoryModelFromJson(json);

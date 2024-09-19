@@ -42,7 +42,8 @@ class Ingredient {
       name: map['name'],
       pictureUrl: map['pictureUrl'],
       category: map['categoryId'] != null
-          ? IngredientCategoryEntity(id: map['categoryId'], name: 'oui')
+          ? IngredientCategoryEntity(
+              id: map['categoryId'], name: 'oui', position: -1)
           : null,
     );
   }
