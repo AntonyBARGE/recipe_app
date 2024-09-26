@@ -4,6 +4,7 @@ import 'package:recipe_app/app/modules/ingredient-category/domain/uses_cases/cre
 import 'package:recipe_app/app/modules/ingredient-category/domain/uses_cases/delete_ingredient_category.dart';
 import 'package:recipe_app/app/modules/ingredient-category/domain/uses_cases/update_ingredient_categories.dart';
 import 'package:recipe_app/core/di/locator.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../core/clean-archi/clean_archi_base_components.dart';
 import '../../../../core/utils/logger.dart';
@@ -38,17 +39,24 @@ class IngredientCategoriesNotifier
     }
   }
 
-  Future<void> addIngredientCategory(
-      IngredientCategoryEntity ingredientCategory) async {
+  Future<void> addIngredientCategory(String newCategoryName) async {
     List<IngredientCategoryEntity> oldList = [];
     if (state is IngredientCategoriesLoaded) {
       oldList = [...(state as IngredientCategoriesLoaded).ingredientCategories];
     }
     state = IngredientCategoriesLoading();
     try {
-      final newIngredient =
-          await _createIngredientCategories(ingredientCategory);
-      state = IngredientCategoriesLoaded([...oldList, newIngredient]);
+      if (newCategoryName.isNotEmpty) {
+        const uuid = Uuid();
+        final newCategory = IngredientCategoryEntity(
+          id: uuid.v1(),
+          name: newCategoryName,
+          position: oldList.length + 1,
+        );
+        final newIngredientCategory =
+            await _createIngredientCategories(newCategory);
+        state = IngredientCategoriesLoaded([...oldList, newIngredientCategory]);
+      }
     } catch (e) {
       logger.e("IngredientCategoriesNotifier.addIngredientCategory error");
       logger.e(e);
@@ -114,6 +122,36 @@ class IngredientCategoriesNotifier
       } else {
         state = IngredientCategoriesLoaded(oldList);
       }
+    }
+  }
+
+  Future<void> reorderIngredientCategories(int oldIndex, int newIndex) async {
+    List<IngredientCategoryEntity> oldList = [];
+    if (state is IngredientCategoriesLoaded) {
+      oldList = [...(state as IngredientCategoriesLoaded).ingredientCategories];
+    }
+    if (oldList.isEmpty) {
+      state = EmptyIngredientCategories();
+      return;
+    }
+    oldList.sort((a, b) => a.position.compareTo(b.position));
+
+    try {
+      if (oldIndex < newIndex) {
+        newIndex -= 1;
+      }
+
+      final movedCategory = oldList.removeAt(oldIndex);
+      oldList.insert(newIndex, movedCategory);
+
+      for (int i = 0; i < oldList.length; i++) {
+        oldList[i] = oldList[i].copyWith(position: i + 1);
+      }
+      await updateIngredientCategories(oldList);
+    } catch (e) {
+      logger.e("IngredientCategoriesNotifier.updateIngredientCategories error");
+      logger.e(e);
+      state = IngredientCategoriesLoaded(oldList);
     }
   }
 }

@@ -10,7 +10,6 @@ class CategoryProxyDecorator extends StatelessWidget {
   final int index;
   final Animation<double> animation;
   final double dx;
-  final void Function(int) toggleExpansion;
   final bool isChangingPosition;
   final IngredientCategoryEntity category;
   final double actionThreshold;
@@ -23,7 +22,6 @@ class CategoryProxyDecorator extends StatelessWidget {
     required this.index,
     required this.animation,
     required this.dx,
-    required this.toggleExpansion,
     required this.isChangingPosition,
     required this.category,
     required this.actionThreshold,
@@ -54,6 +52,7 @@ class CategoryProxyDecorator extends StatelessWidget {
             Color.lerp(editColorStart, editColorEnd, normalizedDx)!;
         final Color deleteColor =
             Color.lerp(deleteColorStart, deleteColorEnd, normalizedDx)!;
+        final double hPadding = lerpDouble(0, 40, animValue)!;
 
         return ClipRect(
           child: Transform.scale(
@@ -101,14 +100,12 @@ class CategoryProxyDecorator extends StatelessWidget {
                   ),
                 Padding(
                   padding: EdgeInsets.symmetric(
-                      horizontal: isChangingPosition ? 40 : 0),
+                      horizontal: isChangingPosition ? hPadding : 0),
                   child: Transform.translate(
                     offset: Offset(dx, 0),
                     child: IngredientCategoryDropdown(
                       key: ValueKey(category.id),
                       category: category,
-                      toggleExpansion: toggleExpansion,
-                      isExpanded: false,
                       elevation: elevation,
                       isDragged: true,
                     ),

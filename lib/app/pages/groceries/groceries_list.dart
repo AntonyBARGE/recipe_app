@@ -14,16 +14,16 @@ class GroceriesList extends ConsumerWidget {
     final state = ref.watch(ingredientCategoriesNotifierProvider);
     final theme = Theme.of(context).textTheme;
 
-    void addCategory(IngredientCategoryEntity newCategory) {
+    void addCategory(String newCategoryName) {
       ref
           .read(ingredientCategoriesNotifierProvider.notifier)
-          .addIngredientCategory(newCategory);
+          .addIngredientCategory(newCategoryName);
     }
 
-    void updateCategories(List<IngredientCategoryEntity> categories) {
+    void reorderCategories(int oldIndex, int newIndex) {
       ref
           .read(ingredientCategoriesNotifierProvider.notifier)
-          .updateIngredientCategories(categories);
+          .reorderIngredientCategories(oldIndex, newIndex);
     }
 
     void deleteCategory(IngredientCategoryEntity category) {}
@@ -52,9 +52,9 @@ class GroceriesList extends ConsumerWidget {
       return IngredientCategoriesList(
         ingredientCategories: state.ingredientCategories,
         addCategory: addCategory,
-        updateCategories: updateCategories,
-        editCategory: (IngredientCategoryEntity category) {},
-        deleteCategory: (IngredientCategoryEntity category) {},
+        reorderCategories: reorderCategories,
+        editCategory: editCategory,
+        deleteCategory: deleteCategory,
       );
     }
 

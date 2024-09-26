@@ -1,55 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/app/modules/ingredient-category/domain/entities/ingredient_category_entity.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class IngredientCategoryDropdown extends StatelessWidget {
+import '../../../modules/ingredient-category/domain/entities/ingredient_category_entity.dart';
+
+final expandedStateProvider =
+    StateProvider.family<bool, String>((ref, categoryId) => false);
+
+class IngredientCategoryDropdown extends ConsumerWidget {
   const IngredientCategoryDropdown({
     super.key,
     required this.category,
-    required this.toggleExpansion,
-    required this.isExpanded,
     this.elevation,
     this.isDragged = false,
   });
 
   final IngredientCategoryEntity category;
-  final void Function(int) toggleExpansion;
-  final bool isExpanded;
   final double? elevation;
   final bool isDragged;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context).textTheme;
+    final isExpanded = ref.watch(expandedStateProvider(category.id));
 
     return Card(
       elevation: elevation ?? 1,
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Column(
+      child: ExpansionTile(
+        key: PageStorageKey(category.id),
+        leading: const Icon(Icons.drag_indicator),
+        title: Text(
+          category.name,
+          style: theme.titleMedium,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+        trailing: !isDragged
+            ? Icon(isExpanded ? Icons.expand_less : Icons.expand_more)
+            : null,
+        initiallyExpanded: isExpanded,
+        onExpansionChanged: (expanded) {
+          ref
+              .read(expandedStateProvider(category.id).notifier)
+              .update((state) => expanded);
+        },
+        tilePadding: const EdgeInsets.symmetric(
+            horizontal: 16.0), // Padding for the title
+        childrenPadding: EdgeInsets.zero, // Padding for the children section
+        maintainState: true, // Keeps the state when collapsed
+        collapsedShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
         children: [
-          ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
+          Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            color: Colors.yellow[100],
+            child: Text(
+              'Details of ${category.name}',
+              style: theme.bodyLarge,
             ),
-            leading: const Icon(Icons.drag_indicator),
-            title: Text(
-              category.name,
-              style: theme.titleMedium,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
-            trailing: !isDragged
-                ? Icon((isExpanded ? Icons.expand_less : Icons.expand_more))
-                : null,
-            onTap: () => toggleExpansion(category.position),
           ),
-          if (isExpanded)
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              color: Colors.yellow[100],
-              child:
-                  Text('Details of ${category.name}', style: theme.bodyLarge),
-            ),
         ],
       ),
     );
