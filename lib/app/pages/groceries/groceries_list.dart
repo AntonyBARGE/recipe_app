@@ -26,6 +26,10 @@ class GroceriesList extends ConsumerWidget {
           .updateIngredientCategories(categories);
     }
 
+    void deleteCategory(IngredientCategoryEntity category) {}
+
+    void editCategory(IngredientCategoryEntity category) {}
+
     if (state is EmptyIngredientCategories) {
       return Container(
         margin: const EdgeInsets.all(8.0),
@@ -49,6 +53,8 @@ class GroceriesList extends ConsumerWidget {
         ingredientCategories: state.ingredientCategories,
         addCategory: addCategory,
         updateCategories: updateCategories,
+        editCategory: (IngredientCategoryEntity category) {},
+        deleteCategory: (IngredientCategoryEntity category) {},
       );
     }
 

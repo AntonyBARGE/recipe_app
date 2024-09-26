@@ -8,12 +8,14 @@ class IngredientCategoryDropdown extends StatelessWidget {
     required this.toggleExpansion,
     required this.isExpanded,
     this.elevation,
+    this.isDragged = false,
   });
 
   final IngredientCategoryEntity category;
   final void Function(int) toggleExpansion;
   final bool isExpanded;
   final double? elevation;
+  final bool isDragged;
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +31,15 @@ class IngredientCategoryDropdown extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.0),
             ),
             leading: const Icon(Icons.drag_indicator),
-            title: Text(category.name, style: theme.titleMedium),
-            trailing: Icon(isExpanded ? Icons.expand_less : Icons.expand_more),
+            title: Text(
+              category.name,
+              style: theme.titleMedium,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            trailing: !isDragged
+                ? Icon((isExpanded ? Icons.expand_less : Icons.expand_more))
+                : null,
             onTap: () => toggleExpansion(category.position),
           ),
           if (isExpanded)
