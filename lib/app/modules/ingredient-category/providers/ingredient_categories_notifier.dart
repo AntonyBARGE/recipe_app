@@ -44,7 +44,6 @@ class IngredientCategoriesNotifier
     if (state is IngredientCategoriesLoaded) {
       oldList = [...(state as IngredientCategoriesLoaded).ingredientCategories];
     }
-    state = IngredientCategoriesLoading();
     try {
       if (newCategoryName.isNotEmpty) {
         const uuid = Uuid();

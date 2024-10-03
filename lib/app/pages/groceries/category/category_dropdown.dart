@@ -44,10 +44,9 @@ class IngredientCategoryDropdown extends ConsumerWidget {
               .read(expandedStateProvider(category.id).notifier)
               .update((state) => expanded);
         },
-        tilePadding: const EdgeInsets.symmetric(
-            horizontal: 16.0), // Padding for the title
-        childrenPadding: EdgeInsets.zero, // Padding for the children section
-        maintainState: true, // Keeps the state when collapsed
+        tilePadding: const EdgeInsets.symmetric(horizontal: 16.0),
+        childrenPadding: EdgeInsets.zero,
+        maintainState: true,
         collapsedShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),

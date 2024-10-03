@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_app/app/pages/groceries/category/category_creation_tile.dart';
 
 import '../../../../core/utils/logger.dart';
 import '../../../modules/ingredient-category/domain/entities/ingredient_category_entity.dart';
@@ -33,7 +34,6 @@ class IngredientCategoriesListState extends State<IngredientCategoriesList>
   double _dy = 0;
   late double _actionThreshold;
   final double _vThreshold = 20;
-  final TextEditingController _categoryController = TextEditingController();
 
   @override
   void initState() {
@@ -44,19 +44,7 @@ class IngredientCategoriesListState extends State<IngredientCategoriesList>
   }
 
   @override
-  void dispose() {
-    _categoryController.dispose();
-    super.dispose();
-  }
-
-  void _createCategory() {
-    widget.addCategory(_categoryController.text);
-    _categoryController.clear();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).textTheme;
     List<IngredientCategoryEntity> categories = widget.ingredientCategories
       ..sort((a, b) => a.position.compareTo(b.position));
 
@@ -90,64 +78,46 @@ class IngredientCategoriesListState extends State<IngredientCategoriesList>
           });
         }
       },
-      child: Column(
+      child: ListView(
         children: [
-          Expanded(
-            child: ReorderableListView.builder(
-              onReorderStart: (index) {
-                _isDragging = true;
-              },
-              onReorderEnd: (index) {
-                _isDragging = false;
-                _dx = 0;
-                _dy = 0;
-              },
-              onReorder: widget.reorderCategories,
-              padding: const EdgeInsets.only(bottom: 80),
-              itemBuilder: (BuildContext context, int index) {
-                final category = categories
-                    .firstWhere((category) => category.position == index + 1);
-                return IngredientCategoryDropdown(
-                  key: ValueKey(category.id),
-                  category: category,
-                );
-              },
-              itemCount: categories.length,
-              proxyDecorator: (child, index, animation) =>
-                  CategoryProxyDecorator(
-                key: ValueKey(categories[index].id),
-                index: index,
-                animation: animation,
-                dx: _dx,
-                category: categories[index],
-                actionThreshold: _actionThreshold,
-                onDelete: () => widget.deleteCategory(categories[index]),
-                onEdit: () => widget.editCategory(categories[index]),
-                isChangingPosition: _dy.abs() < _vThreshold,
-                child: child,
-              ),
+          ReorderableListView.builder(
+            physics: const ScrollPhysics(),
+            shrinkWrap: true,
+            onReorderStart: (index) {
+              _isDragging = true;
+            },
+            onReorderEnd: (index) {
+              _isDragging = false;
+              _dx = 0;
+              _dy = 0;
+            },
+            onReorder: widget.reorderCategories,
+            padding: const EdgeInsets.only(bottom: 80),
+            itemBuilder: (BuildContext context, int index) {
+              final category = categories
+                  .firstWhere((category) => category.position == index + 1);
+              return IngredientCategoryDropdown(
+                key: ValueKey(category.id),
+                category: category,
+              );
+            },
+            itemCount: categories.length,
+            proxyDecorator: (child, index, animation) => CategoryProxyDecorator(
+              key: ValueKey(categories[index].id),
+              index: index,
+              animation: animation,
+              dx: _dx,
+              category: categories[index],
+              actionThreshold: _actionThreshold,
+              onDelete: () => widget.deleteCategory(categories[index]),
+              onEdit: () => widget.editCategory(categories[index]),
+              isChangingPosition: _dy.abs() < _vThreshold,
+              child: child,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              children: [
-                TextField(
-                  controller: _categoryController,
-                  decoration: const InputDecoration(
-                    labelText: 'Category Name',
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: _createCategory,
-                  child: Text(
-                    'Create Category',
-                    style: theme.bodyLarge,
-                  ),
-                ),
-              ],
-            ),
+          CategoryCreationTile(
+            key: ValueKey(categories.length + 1),
+            addCategory: widget.addCategory,
           ),
         ],
       ),
