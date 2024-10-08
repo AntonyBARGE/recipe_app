@@ -44,8 +44,9 @@ class CategoryCreationTile extends ConsumerWidget {
               hintText: 'Nouvelle catégorie :',
             ),
             onChanged: (newCategoryName) {
-              ref.read(categoryCreationTextProvider.notifier).state =
-                  newCategoryName;
+              ref
+                  .read(categoryCreationTextProvider.notifier)
+                  .update((state) => newCategoryName);
             },
           ),
         ),

@@ -1,47 +1,44 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../modules/ingredient-category/domain/entities/ingredient_category_entity.dart';
+import 'categories_list.dart';
 import 'category_dropdown.dart';
 
-class CategoryProxyDecorator extends StatelessWidget {
+class CategoryProxyDecorator extends ConsumerWidget {
   final Widget child;
   final int index;
   final Animation<double> animation;
-  final double dx;
   final bool isChangingPosition;
   final IngredientCategoryEntity category;
   final double actionThreshold;
-  final void Function() onDelete;
-  final void Function() onEdit;
 
   const CategoryProxyDecorator({
     super.key,
     required this.child,
     required this.index,
     required this.animation,
-    required this.dx,
     required this.isChangingPosition,
     required this.category,
     required this.actionThreshold,
-    required this.onDelete,
-    required this.onEdit,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     Color editColorStart = Colors.green[200]!;
     const Color editColorEnd = Colors.green;
     Color deleteColorStart = Colors.red[200]!;
     const Color deleteColorEnd = Colors.red;
 
-    final bool isSwipingLeft = dx < 0;
-    final bool isSwipingRight = dx > 0;
-
     return AnimatedBuilder(
       animation: animation,
       builder: (BuildContext context, Widget? child) {
+        final double dx = ref.read(dxProvider);
+        final bool isSwipingLeft = dx < 0;
+        final bool isSwipingRight = dx > 0;
+
         final double animValue = Curves.easeInOut.transform(animation.value);
         final double elevation = lerpDouble(1, 6, animValue)!;
         final double scale = lerpDouble(1, 1.05, animValue)!;

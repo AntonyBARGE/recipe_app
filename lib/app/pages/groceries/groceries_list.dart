@@ -26,7 +26,11 @@ class GroceriesList extends ConsumerWidget {
           .reorderIngredientCategories(oldIndex, newIndex);
     }
 
-    void deleteCategory(IngredientCategoryEntity category) {}
+    void deleteCategory(String id) {
+      ref
+          .read(ingredientCategoriesNotifierProvider.notifier)
+          .deleteIngredientCategory(id);
+    }
 
     void editCategory(IngredientCategoryEntity category) {}
 
