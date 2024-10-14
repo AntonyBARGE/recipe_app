@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../modules/ingredient-category/domain/entities/ingredient_category_entity.dart';
 import '../../modules/ingredient-category/providers/ingredient_categories_provider.dart';
 import '../../modules/ingredient-category/providers/ingredient_categories_state.dart';
 import 'category/categories_list.dart';
@@ -26,13 +25,17 @@ class GroceriesList extends ConsumerWidget {
           .reorderIngredientCategories(oldIndex, newIndex);
     }
 
-    void deleteCategory(String id) {
+    void deleteCategory(String id, int position) {
       ref
           .read(ingredientCategoriesNotifierProvider.notifier)
-          .deleteIngredientCategory(id);
+          .deleteIngredientCategory(id, position);
     }
 
-    void editCategory(IngredientCategoryEntity category) {}
+    void editCategory(String id, String newName) {
+      ref
+          .read(ingredientCategoriesNotifierProvider.notifier)
+          .editNameIngredientCategory(id, newName);
+    }
 
     if (state is EmptyIngredientCategories) {
       return Container(

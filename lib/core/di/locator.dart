@@ -12,6 +12,7 @@ import '../../app/modules/ingredient-category/domain/uses_cases/create_ingredien
 import '../../app/modules/ingredient-category/domain/uses_cases/delete_ingredient_category.dart';
 import '../../app/modules/ingredient-category/domain/uses_cases/retrieve_all_ingredient_category.dart';
 import '../../app/modules/ingredient-category/domain/uses_cases/update_ingredient_categories.dart';
+import '../../app/modules/ingredient-category/domain/uses_cases/update_ingredient_category.dart';
 
 GetIt locator = GetIt.instance;
 
@@ -40,4 +41,7 @@ void setupLocator() {
 
   locator.registerLazySingleton<UpdateIngredientCategories>(() =>
       UpdateIngredientCategories(locator.get<IngredientCategoryRepository>()));
+
+  locator.registerLazySingleton<UpdateIngredientCategory>(() =>
+      UpdateIngredientCategory(locator.get<IngredientCategoryRepository>()));
 }

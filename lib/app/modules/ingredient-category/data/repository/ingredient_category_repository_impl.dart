@@ -98,6 +98,20 @@ class IngredientCategoryRepositoryImpl implements IngredientCategoryRepository {
   }
 
   @override
+  Future<void> updateIngredientCategory({
+    required IngredientCategoryEntity updatedCategory,
+  }) async {
+    try {
+      await _ingredientCategoryCacheProvider.updateIngredientCategory(
+        _ingredientCategoryMapper.mapEntityToModel(updatedCategory),
+      );
+    } catch (e) {
+      logger.e("Error updating ingredient category: $e");
+      rethrow;
+    }
+  }
+
+  @override
   Future<void> deleteIngredientCategory({
     required String categoryId,
   }) async {

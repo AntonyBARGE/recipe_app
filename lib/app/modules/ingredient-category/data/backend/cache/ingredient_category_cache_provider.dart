@@ -74,6 +74,16 @@ class IngredientCategoryCacheProvider {
     await batch.commit(noResult: true);
   }
 
+  Future<void> updateIngredientCategory(
+      IngredientCategoryModel category) async {
+    await _database.update(
+      DatabaseStore.INGREDIENT_CATEGORY_DATA,
+      category.toJson(),
+      where: 'id = ?',
+      whereArgs: [category.id],
+    );
+  }
+
   Future<void> deleteIngredientCategory(String id) async {
     await _database.delete(
       DatabaseStore.INGREDIENT_CATEGORY_DATA,

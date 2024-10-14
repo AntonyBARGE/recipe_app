@@ -9,6 +9,7 @@ import 'package:uuid/uuid.dart';
 import '../../../../core/clean-archi/clean_archi_base_components.dart';
 import '../../../../core/utils/logger.dart';
 import '../domain/uses_cases/retrieve_all_ingredient_category.dart';
+import '../domain/uses_cases/update_ingredient_category.dart';
 import 'ingredient_categories_state.dart';
 
 class IngredientCategoriesNotifier
@@ -18,6 +19,7 @@ class IngredientCategoriesNotifier
   final CreateIngredientCategory _createIngredientCategories = locator.get();
   final DeleteIngredientCategory _deleteIngredientCategories = locator.get();
   final UpdateIngredientCategories _updateIngredientCategories = locator.get();
+  final UpdateIngredientCategory _updateIngredientCategory = locator.get();
 
   IngredientCategoriesNotifier() : super(IngredientCategoriesLoading()) {
     fetchIngredientCategories();
@@ -101,18 +103,24 @@ class IngredientCategoriesNotifier
     }
   }
 
-  Future<void> deleteIngredientCategory(String id) async {
+  Future<void> deleteIngredientCategory(String id, int position) async {
     List<IngredientCategoryEntity> oldList = [];
     if (state is IngredientCategoriesLoaded) {
       oldList = [...(state as IngredientCategoriesLoaded).ingredientCategories];
     }
     state = IngredientCategoriesLoading();
     try {
-      await _deleteIngredientCategories(id);
       oldList.removeWhere((category) => category.id == id);
+      for (int i = 0; i < oldList.length; i++) {
+        if (oldList[i].position > position) {
+          oldList[i] = oldList[i].copyWith(position: oldList[i].position - 1);
+        }
+      }
       state = oldList.isEmpty
           ? EmptyIngredientCategories()
           : IngredientCategoriesLoaded(oldList);
+      await _deleteIngredientCategories(id);
+      await _updateIngredientCategories(oldList);
     } catch (e) {
       logger.e("IngredientCategoriesNotifier.addIngredientCategory error");
       logger.e(e);
@@ -149,6 +157,36 @@ class IngredientCategoriesNotifier
       await updateIngredientCategories(oldList);
     } catch (e) {
       logger.e("IngredientCategoriesNotifier.updateIngredientCategories error");
+      logger.e(e);
+      state = IngredientCategoriesLoaded(oldList);
+    }
+  }
+
+  Future<void> editNameIngredientCategory(
+      String categoryId, String newCategoryName) async {
+    List<IngredientCategoryEntity> oldList = [];
+    if (state is IngredientCategoriesLoaded) {
+      oldList = [...(state as IngredientCategoriesLoaded).ingredientCategories];
+    }
+    if (oldList.isEmpty) {
+      state = EmptyIngredientCategories();
+      return;
+    }
+
+    try {
+      final editedCategory =
+          oldList.firstWhere((category) => category.id == categoryId);
+      final updatedCategory = editedCategory.copyWith(name: newCategoryName);
+
+      final updatedList = oldList.map((category) {
+        return category.id == categoryId ? updatedCategory : category;
+      }).toList();
+
+      state = IngredientCategoriesLoaded(updatedList);
+
+      await _updateIngredientCategory(updatedCategory);
+    } catch (e) {
+      logger.e("IngredientCategoriesNotifier.editNameIngredientCategory error");
       logger.e(e);
       state = IngredientCategoriesLoaded(oldList);
     }

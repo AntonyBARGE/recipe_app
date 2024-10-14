@@ -15,8 +15,8 @@ class IngredientCategoriesList extends ConsumerStatefulWidget {
   final List<IngredientCategoryEntity> ingredientCategories;
   final void Function(String) addCategory;
   final void Function(int, int) reorderCategories;
-  final void Function(String) deleteCategory;
-  final void Function(IngredientCategoryEntity category) editCategory;
+  final void Function(String, int) deleteCategory;
+  final void Function(String, String) editCategory;
 
   const IngredientCategoriesList({
     super.key,
@@ -55,7 +55,7 @@ class IngredientCategoriesListState
 
     return Listener(
       onPointerMove: (PointerMoveEvent event) {
-        if (_isDragging) {
+        if (_isDragging && mounted && _draggedIndex < categories.length) {
           ref
               .read(dxProvider.notifier)
               .update((state) => state + event.delta.dx);
@@ -66,17 +66,22 @@ class IngredientCategoriesListState
           if (ref.read(dxProvider).abs() > _actionThreshold &&
               ref.read(dyProvider).abs() < _vThreshold) {
             if (ref.read(dxProvider) > 0) {
-              widget.deleteCategory(categories[_draggedIndex].id);
+              widget.deleteCategory(
+                categories[_draggedIndex].id,
+                categories[_draggedIndex].position,
+              );
             } else {
               log('edit');
-              // widget.editCategory(_categories[_draggedIndex]);
+              ref
+                  .read(editStateProvider.notifier)
+                  .update((state) => categories[_draggedIndex].id);
             }
             ref.read(dxProvider.notifier).update((state) => 0);
           }
         }
       },
       onPointerUp: (_) {
-        if (_isDragging) {
+        if (_isDragging && mounted) {
           ref.read(dxProvider.notifier).update((state) => 0);
           ref.read(dyProvider.notifier).update((state) => 0);
           setState(() {
@@ -106,6 +111,7 @@ class IngredientCategoriesListState
               return IngredientCategoryDropdown(
                 key: ValueKey(category.id),
                 category: category,
+                editCategory: widget.editCategory,
               );
             },
             itemCount: categories.length,

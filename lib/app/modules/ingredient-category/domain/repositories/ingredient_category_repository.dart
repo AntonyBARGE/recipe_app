@@ -14,6 +14,10 @@ abstract class IngredientCategoryRepository {
     required List<IngredientCategoryEntity> updatedCategories,
   });
 
+  Future<void> updateIngredientCategory({
+    required IngredientCategoryEntity updatedCategory,
+  });
+
   Future<void> deleteIngredientCategory({
     required String categoryId,
   });
